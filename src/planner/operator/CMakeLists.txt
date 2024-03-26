@@ -27,6 +27,7 @@ add_library_unity(
   logical_limit.cpp
   logical_order.cpp
   logical_pivot.cpp
+  logical_predict.cpp
   logical_positional_join.cpp
   logical_pragma.cpp
   logical_prepare.cpp

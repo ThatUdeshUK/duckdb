@@ -282,6 +282,9 @@ unique_ptr<BoundTableRef> Binder::Bind(TableRef &ref) {
 	case TableReferenceType::PIVOT:
 		result = Bind(ref.Cast<PivotRef>());
 		break;
+    case TableReferenceType::PREDICT:
+        result = Bind(ref.Cast<PredictRef>());
+        break;
 	case TableReferenceType::SHOW_REF:
 		result = Bind(ref.Cast<ShowRef>());
 		break;
@@ -324,6 +327,9 @@ unique_ptr<LogicalOperator> Binder::CreatePlan(BoundTableRef &ref) {
 	case TableReferenceType::PIVOT:
 		root = CreatePlan(ref.Cast<BoundPivotRef>());
 		break;
+    case TableReferenceType::PREDICT:
+        root = CreatePlan(ref.Cast<BoundPredictRef>());
+        break;
 	case TableReferenceType::INVALID:
 	default:
 		throw InternalException("Unsupported bound table ref type (%s)", EnumUtil::ToString(ref.type));

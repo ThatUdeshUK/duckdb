@@ -151,6 +151,22 @@ BoundPivotInfo BoundPivotInfo::Deserialize(Deserializer &deserializer) {
 	return result;
 }
 
+void BoundPredictInfo::Serialize(Serializer &serializer) const {
+    serializer.WritePropertyWithDefault<string>(100, "model_name", model_name);
+    serializer.WritePropertyWithDefault<vector<LogicalType>>(101, "types", types);
+    serializer.WritePropertyWithDefault<vector<string>>(102, "result_set_names", result_set_names);
+    serializer.WritePropertyWithDefault<vector<LogicalType>>(103, "result_set_types", result_set_types);
+}
+
+BoundPredictInfo BoundPredictInfo::Deserialize(Deserializer &deserializer) {
+    BoundPredictInfo result;
+    deserializer.ReadPropertyWithDefault<string>(100, "model_name", result.model_name);
+    deserializer.ReadPropertyWithDefault<vector<LogicalType>>(101, "types", result.types);
+    deserializer.ReadPropertyWithDefault<vector<string>>(102, "result_set_names", result.result_set_names);
+    deserializer.ReadPropertyWithDefault<vector<LogicalType>>(103, "result_set_types", result.result_set_types);
+    return result;
+}
+
 template <typename T>
 void CSVOption<T>::Serialize(Serializer &serializer) const {
 	serializer.WritePropertyWithDefault<bool>(100, "set_by_user", set_by_user);

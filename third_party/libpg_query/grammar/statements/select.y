@@ -1100,6 +1100,32 @@ table_ref:	relation_expr opt_alias_clause opt_tablesample_clause
 					n->location = @2;
 					$$ = (PGNode *) n;
 				}
+			| PREDICT '(' SCONST ',' table_ref ')' WITH '(' with_result_col_list ')' opt_alias_clause
+				{
+					PGPredictExpr *n = makeNode(PGPredictExpr);
+					n->source = $5;
+					n->model_name = $3;
+					n->result_set = $9;
+					n->alias = $11;
+					$$ = (PGNode *) n;
+				}
+		;
+
+with_result_col_list:
+			result_col_list					{ $$ = $1; }
+			| result_col_list ','					{ $$ = $1; }
+			| /*EMPTY*/							{ $$ = NIL; }
+		;
+
+result_col_list:
+			columnDef
+				{
+					$$ = list_make1($1);
+				}
+			| result_col_list ',' columnDef
+				{
+					$$ = lappend($1, $3);
+				}
 		;
 
 opt_pivot_group_by:

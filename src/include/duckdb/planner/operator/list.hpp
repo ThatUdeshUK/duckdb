@@ -28,6 +28,7 @@
 #include "duckdb/planner/operator/logical_materialized_cte.hpp"
 #include "duckdb/planner/operator/logical_order.hpp"
 #include "duckdb/planner/operator/logical_pivot.hpp"
+#include "duckdb/planner/operator/logical_predict.hpp"
 #include "duckdb/planner/operator/logical_positional_join.hpp"
 #include "duckdb/planner/operator/logical_pragma.hpp"
 #include "duckdb/planner/operator/logical_prepare.hpp"

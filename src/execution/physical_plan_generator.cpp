@@ -208,6 +208,9 @@ unique_ptr<PhysicalOperator> PhysicalPlanGenerator::CreatePlan(LogicalOperator &
 	case LogicalOperatorType::LOGICAL_PIVOT:
 		plan = CreatePlan(op.Cast<LogicalPivot>());
 		break;
+    case LogicalOperatorType::LOGICAL_PREDICT:
+        plan = CreatePlan(op.Cast<LogicalPredict>());
+        break;
 	case LogicalOperatorType::LOGICAL_COPY_DATABASE:
 		plan = CreatePlan(op.Cast<LogicalCopyDatabase>());
 		break;

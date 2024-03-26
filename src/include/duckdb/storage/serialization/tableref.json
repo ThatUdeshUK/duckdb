@@ -218,6 +218,28 @@
     ]
   },
   {
+    "class": "PredictRef",
+    "base": "TableRef",
+    "enum": "PREDICT",
+    "members": [
+      {
+        "id": 200,
+        "name": "source",
+        "type": "TableRef*"
+      },
+      {
+        "id": 201,
+        "name": "model_name",
+        "type": "string"
+      },
+      {
+        "id": 202,
+        "name": "column_name_alias",
+        "type": "vector<string>"
+      }
+    ]
+  },
+  {
     "class": "ShowRef",
     "base": "TableRef",
     "enum": "SHOW_REF",

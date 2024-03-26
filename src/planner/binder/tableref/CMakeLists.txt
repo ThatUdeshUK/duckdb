@@ -7,6 +7,7 @@ add_library_unity(
   bind_column_data_ref.cpp
   bind_joinref.cpp
   bind_pivot.cpp
+  bind_predictref.cpp
   bind_showref.cpp
   bind_subqueryref.cpp
   bind_table_function.cpp
@@ -19,7 +20,8 @@ add_library_unity(
   plan_subqueryref.cpp
   plan_table_function.cpp
   plan_cteref.cpp
-  plan_pivotref.cpp)
+  plan_pivotref.cpp
+  plan_predictref.cpp)
 set(ALL_OBJECT_FILES
     ${ALL_OBJECT_FILES} $<TARGET_OBJECTS:duckdb_bind_tableref>
     PARENT_SCOPE)

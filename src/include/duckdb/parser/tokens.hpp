@@ -99,6 +99,7 @@ class EmptyTableRef;
 class ExpressionListRef;
 class ColumnDataRef;
 class PivotRef;
+class PredictRef;
 class ShowRef;
 
 //===--------------------------------------------------------------------===//

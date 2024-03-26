@@ -318,6 +318,10 @@ private:
 	unique_ptr<BoundTableRef> Bind(ColumnDataRef &ref);
 	unique_ptr<BoundTableRef> Bind(PivotRef &expr);
 	unique_ptr<BoundTableRef> Bind(ShowRef &ref);
+    unique_ptr<BoundTableRef> Bind(PredictRef &expr);
+
+    unique_ptr<SelectNode> BindPredict(PredictRef &expr);
+    unique_ptr<BoundTableRef> BindBoundPredict(PredictRef &expr);
 
 	unique_ptr<SelectNode> BindPivot(PivotRef &expr, vector<unique_ptr<ParsedExpression>> all_columns);
 	unique_ptr<SelectNode> BindUnpivot(Binder &child_binder, PivotRef &expr,
@@ -349,6 +353,7 @@ private:
 	unique_ptr<LogicalOperator> CreatePlan(BoundColumnDataRef &ref);
 	unique_ptr<LogicalOperator> CreatePlan(BoundCTERef &ref);
 	unique_ptr<LogicalOperator> CreatePlan(BoundPivotRef &ref);
+    unique_ptr<LogicalOperator> CreatePlan(BoundPredictRef &ref);
 
 	BoundStatement BindCopyTo(CopyStatement &stmt);
 	BoundStatement BindCopyFrom(CopyStatement &stmt);

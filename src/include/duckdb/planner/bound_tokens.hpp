@@ -55,5 +55,6 @@ class BoundExpressionListRef;
 class BoundColumnDataRef;
 class BoundCTERef;
 class BoundPivotRef;
+class BoundPredictRef;
 
 } // namespace duckdb

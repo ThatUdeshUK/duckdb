@@ -41,6 +41,7 @@ class LogicalJoin;
 class LogicalLimit;
 class LogicalOrder;
 class LogicalPivot;
+class LogicalPredict;
 class LogicalPositionalJoin;
 class LogicalPragma;
 class LogicalPrepare;

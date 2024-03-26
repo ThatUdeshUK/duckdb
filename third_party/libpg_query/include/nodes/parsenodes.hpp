@@ -1225,6 +1225,20 @@ typedef struct PGPivotStmt {
 	int location;        /* token location, or -1 if unknown */
 } PGPivotStmt;
 
+/*
+ * ----------------------
+ *      Predict Expression
+ * ----------------------
+ */
+typedef struct PGPredictExpr {
+    PGNodeTag type;
+    PGNode *source;      /* the source subtree */
+    char *model_name;    /* path to the model */
+    PGList *result_set;  /* The result set produced by the model */
+    PGAlias *alias;      /* table alias & optional column aliases */
+    int location;        /* token location, or -1 if unknown */
+} PGPredictExpr;
+
 /* ----------------------
  *		Select Statement
  *
