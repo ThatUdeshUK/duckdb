@@ -11,6 +11,8 @@
 #include "duckdb/execution/physical_operator.hpp"
 #include "duckdb/planner/expression.hpp"
 
+#include "duckdb_torch.hpp"
+
 namespace duckdb {
 
 //! PhysicalPredict implements the physical PREDICT operation
@@ -28,8 +30,9 @@ public:
     string ParamsToString() const override;
 
 public:
+    unique_ptr<OperatorState> GetOperatorState(ExecutionContext &context) const override;
     OperatorResultType Execute(ExecutionContext &context, DataChunk &input, DataChunk &chunk,
-                               GlobalOperatorState &gstate, OperatorState &state) const override;
+                               GlobalOperatorState &gstate, OperatorState &state_p) const override;
 
     bool ParallelOperator() const override {
         return true;

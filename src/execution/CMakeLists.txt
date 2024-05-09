@@ -1,3 +1,6 @@
+include_directories(../../third_party/duckdb_torch/include)
+include_directories(../../third_party/duckdb_torch)
+
 add_subdirectory(expression_executor)
 add_subdirectory(nested_loop_join)
 add_subdirectory(operator)
