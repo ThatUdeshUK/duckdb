@@ -11,9 +11,27 @@
 #include "duckdb/execution/physical_operator.hpp"
 #include "duckdb/planner/expression.hpp"
 
-#include "duckdb_torch.hpp"
-
 namespace duckdb {
+struct PredictStats {
+    long load;
+    long move;
+    long predict;
+    long move_rev;
+};
+
+class Predictor {
+public:
+    Predictor() : success(false), error_message(""){};
+    ~Predictor() {};
+
+    bool success;
+    std::string error_message;
+public:
+    virtual void Load(const std::string &model_path, PredictStats &stats) {};
+    virtual void Predict(std::vector<float> &input, std::vector<float> &output, int output_size) {};
+    virtual void PredictVector(std::vector<float> &input, std::vector<float> &output, int m, int n, int output_size) {};
+    virtual void PredictChunk(DataChunk &input, DataChunk &output, int m, int n, int output_size, PredictStats &stats) {};
+};
 
 //! PhysicalPredict implements the physical PREDICT operation
 class PhysicalPredict : public PhysicalOperator {

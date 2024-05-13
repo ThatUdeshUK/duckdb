@@ -1,5 +1,7 @@
-include_directories(../../third_party/duckdb_torch/include)
-include_directories(../../third_party/duckdb_torch)
+if(ENABLE_PREDICT)
+    include_directories(${LIBTORCH_INCLUDE_DIRS})
+    include_directories(../../third_party/duckdb_torch)
+endif()
 
 add_subdirectory(expression_executor)
 add_subdirectory(nested_loop_join)

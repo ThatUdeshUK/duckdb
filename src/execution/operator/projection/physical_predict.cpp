@@ -1,5 +1,10 @@
 #include "duckdb/execution/operator/projection/physical_predict.hpp"
 #include "duckdb/common/common.hpp"
+#include <iostream>
+
+#ifdef ENABLE_PREDICT
+#include "duckdb_torch.hpp"
+#endif
 
 #define ZERO_COPY_VEC_PRED 1
 #define VEC_PRED 0
@@ -7,13 +12,13 @@
 namespace duckdb {
 class PredictState : public OperatorState {
 public:
-    explicit PredictState(ExecutionContext &context, TorchPredictor predictor, TorchPredictStats stats) {
+    explicit PredictState(ExecutionContext &context, Predictor predictor, PredictStats stats) {
         this->predictor = predictor;
         this->stats = stats;
     }
 
-    TorchPredictor predictor;
-    TorchPredictStats stats;
+    Predictor predictor;
+    PredictStats stats;
 
 public:
     void Finalize(const PhysicalOperator &op, ExecutionContext &context) override {
@@ -38,10 +43,14 @@ PhysicalPredict::PhysicalPredict(vector<LogicalType> types_p, unique_ptr<Physica
 }
 
 unique_ptr<OperatorState> PhysicalPredict::GetOperatorState(ExecutionContext &context) const {
-    unique_ptr<TorchPredictStats> stats = make_uniq<TorchPredictStats>();
-    unique_ptr<TorchPredictor> p = make_uniq<TorchPredictor>();
+#ifdef ENABLE_PREDICT
+    auto stats = make_uniq<PredictStats>();
+    auto p = make_uniq<TorchPredictor>();
     p->Load(model_name, *stats);
     return make_uniq<PredictState>(context, *p, *stats);
+#else
+    return nullptr;
+#endif
 }
 
 OperatorResultType PhysicalPredict::Execute(ExecutionContext &context, DataChunk &input, DataChunk &chunk,

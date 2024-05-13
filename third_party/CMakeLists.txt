@@ -15,6 +15,10 @@ if(NOT AMALGAMATION_BUILD)
   add_subdirectory(yyjson)
 endif()
 
+if(ENABLE_PREDICT)
+  add_subdirectory(duckdb_torch)
+endif()
+
 if(NOT WIN32
    AND NOT SUN
    AND ${BUILD_UNITTESTS})

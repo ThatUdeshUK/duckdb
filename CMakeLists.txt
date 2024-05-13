@@ -374,6 +374,7 @@ option(BUILD_BENCHMARKS "Enable building of the benchmark suite." FALSE)
 option(BUILD_TPCE "Enable building of the TPC-E tool." FALSE)
 option(DISABLE_BUILTIN_EXTENSIONS "Disable linking extensions." FALSE)
 option(BUILD_ODBC_DRIVER "Build the DuckDB ODBC driver" FALSE)
+option(ENABLE_PREDICT "Build the ML Operator with DuckDB" FALSE)
 option(BUILD_PYTHON "Build the DuckDB Python extension" FALSE)
 option(USER_SPACE "Build the DuckDB Python in the user space" FALSE)
 option(FORCE_QUERY_LOG "If enabled, all queries will be logged to the specified path" OFF)
@@ -1120,6 +1121,13 @@ endif()
 # Load client specific config
 if(BUILD_PYTHON)
   include(${CMAKE_CURRENT_SOURCE_DIR}/tools/pythonpkg/duckdb_extension_config.cmake)
+endif()
+
+if (ENABLE_PREDICT)
+  execute_process(COMMAND python3 -c "import torch;print(torch.__file__.replace('/__init__.py', ''),end ='')" OUTPUT_VARIABLE LIBTORCH_PATH)
+  set(LIBTORCH_INCLUDE_DIRS "${LIBTORCH_PATH}/include")
+  message(STATUS "Torch headers: ${LIBTORCH_INCLUDE_DIRS}")
+  add_definitions(-DENABLE_PREDICT)
 endif()
 
 # Load base extension config

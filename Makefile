@@ -143,8 +143,11 @@ endif
 ifneq ($(ODBC_CONFIG),)
 	CMAKE_VARS:=${CMAKE_VARS} -DODBC_CONFIG=${ODBC_CONFIG}
 endif
-ifeq (${BUILD_PYTHON}, 1)
-	CMAKE_VARS:=${CMAKE_VARS} -DBUILD_PYTHON=1 -DDUCKDB_EXTENSION_CONFIGS="tools/pythonpkg/duckdb_extension_config.cmake"
+ifeq (${BUILD_UU}, 1)
+	CMAKE_VARS:=${CMAKE_VARS} -DBUILD_UU=1
+endif
+ifeq (${ENABLE_PREDICT}, 1)
+	CMAKE_VARS:=${CMAKE_VARS} -DENABLE_PREDICT=1 -DDUCKDB_EXTENSION_CONFIGS="tools/pythonpkg/duckdb_extension_config.cmake"
 endif
 ifeq (${PYTHON_USER_SPACE}, 1)
 	CMAKE_VARS:=${CMAKE_VARS} -DUSER_SPACE=1
