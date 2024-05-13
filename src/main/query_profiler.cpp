@@ -287,6 +287,20 @@ void OperatorProfiler::Flush(const PhysicalOperator &phys_op, ExpressionExecutor
 	operator_timing.name = phys_op.GetName();
 }
 
+void OperatorProfiler::Flush(const PhysicalOperator &phys_op, std::map<std::string, long> &stats_map,
+                             const string &name) {
+    auto entry = timings.find(phys_op);
+    if (entry == timings.end()) {
+        return;
+    }
+    auto &operator_timing = timings.find(phys_op)->second;
+    operator_timing.append_extra_info = "";
+    for (const auto& x: stats_map) {
+        operator_timing.append_extra_info += "|" + x.first + ":" + std::to_string(x.second);
+    }
+    operator_timing.name = phys_op.GetName();
+}
+
 void QueryProfiler::Flush(OperatorProfiler &profiler) {
 	lock_guard<mutex> guard(flush_lock);
 	if (!IsEnabled() || !running) {
@@ -300,6 +314,7 @@ void QueryProfiler::Flush(OperatorProfiler &profiler) {
 
 		tree_node.info.time += node.second.time;
 		tree_node.info.elements += node.second.elements;
+        tree_node.extra_info += node.second.append_extra_info;
 		if (!IsDetailedEnabled()) {
 			continue;
 		}

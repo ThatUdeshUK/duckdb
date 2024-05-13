@@ -22,7 +22,13 @@ public:
         std::cout << "Predict @run: " << stats.predict << std::endl;
         std::cout << "Move Rev @run: " << stats.move_rev << std::endl;
 
-//        context.thread.profiler.Flush(op, executor, "projection", 0);
+        std::map<std::string, long> stats_map{{"load", stats.load},
+                                      {"move", stats.move},
+                                      {"predict", stats.predict},
+                                      {"move_rev", stats.move_rev}};
+
+
+        context.thread.profiler.Flush(op, stats_map, "predict");
     }
 };
 

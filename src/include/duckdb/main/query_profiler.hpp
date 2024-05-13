@@ -35,6 +35,7 @@ struct OperatorInformation {
 	double time = 0;
 	idx_t elements = 0;
 	string name;
+    string append_extra_info;
 };
 
 //! The OperatorProfiler measures timings of individual operators
@@ -48,6 +49,7 @@ public:
 	DUCKDB_API void EndOperator(optional_ptr<DataChunk> chunk);
 	DUCKDB_API void Flush(const PhysicalOperator &phys_op, ExpressionExecutor &expression_executor, const string &name,
 	                      int id);
+    DUCKDB_API void Flush(const PhysicalOperator &phys_op, std::map<std::string, long> &stats_map, const string &name);
 
 	~OperatorProfiler() {
 	}
