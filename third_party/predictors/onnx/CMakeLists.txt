@@ -8,10 +8,8 @@ endif()
 set(CMAKE_CXX_STANDARD 17)
 #set(CMAKE_BUILD_TYPE RelWithDebInfo)
 
-find_library(ONNX_RUNTIME_LIB onnxruntime HINTS /usr/local/lib)
+find_library(ONNX_RUNTIME_LIB onnxruntime HINTS "${ONNX_INSTALL_PREFIX}/lib")
 message(STATUS "ORT Include Libs: ${ONNX_RUNTIME_SESSION_INCLUDE_DIRS}")
-
-include_directories( ${LIBTORCH_INCLUDE_DIRS} )
 
 add_library(duckdb_onnx STATIC duckdb_onnx.cpp)
 
