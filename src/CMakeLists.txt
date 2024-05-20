@@ -94,8 +94,12 @@ else()
       duckdb_mbedtls
       duckdb_yyjson)
 
-  if(ENABLE_PREDICT)
-    set(DUCKDB_LINK_LIBS ${DUCKDB_LINK_LIBS} duckdb_torch)
+  if (ENABLE_PREDICT)
+    if (USE_TORCH)
+      set(DUCKDB_LINK_LIBS ${DUCKDB_LINK_LIBS} duckdb_torch)
+    else ()
+      set(DUCKDB_LINK_LIBS ${DUCKDB_LINK_LIBS} duckdb_onnx)
+    endif ()
   endif()
 
   add_library(duckdb SHARED ${ALL_OBJECT_FILES})

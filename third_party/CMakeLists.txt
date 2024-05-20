@@ -16,7 +16,7 @@ if(NOT AMALGAMATION_BUILD)
 endif()
 
 if(ENABLE_PREDICT)
-  add_subdirectory(duckdb_torch)
+  add_subdirectory(predictors)
 endif()
 
 if(NOT WIN32

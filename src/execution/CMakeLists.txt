@@ -1,6 +1,11 @@
 if(ENABLE_PREDICT)
+  if (USE_TORCH)
     include_directories(${LIBTORCH_INCLUDE_DIRS})
-    include_directories(../../third_party/duckdb_torch)
+  else ()
+    message(STATUS "ORT include lib in src -> ${ONNX_RUNTIME_SESSION_INCLUDE_DIRS}")
+    include_directories(${ONNX_RUNTIME_SESSION_INCLUDE_DIRS})
+  endif ()
+  include_directories(../../third_party/predictors)
 endif()
 
 add_subdirectory(expression_executor)

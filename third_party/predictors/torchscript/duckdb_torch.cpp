@@ -28,7 +28,7 @@ void TorchPredictor::Predict(std::vector<float> &input, std::vector<float> &outp
     inputs.push_back(my_input);
 
     at::Tensor out = model.forward(inputs).toTensor();
-    output.push_back(*out.data_ptr<float>());
+    output.insert(output.end(), out.data_ptr<float>(), out.data_ptr<float>() + out.numel());
 }
 
 void TorchPredictor::PredictVector(std::vector<float> &input, std::vector<float> &output, int m, int n,

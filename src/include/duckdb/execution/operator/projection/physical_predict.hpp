@@ -22,7 +22,7 @@ struct PredictStats {
 class Predictor {
 public:
     Predictor() : success(false), error_message(""){};
-    ~Predictor() {};
+    virtual ~Predictor() {};
 
     bool success;
     std::string error_message;
@@ -55,6 +55,8 @@ public:
     bool ParallelOperator() const override {
         return true;
     }
+private:
+    unique_ptr<Predictor> InitPredictor() const;
 };
 
 } // namespace duckdb
