@@ -1,6 +1,7 @@
 #include "duckdb/execution/operator/projection/physical_predict.hpp"
 #include "duckdb/common/common.hpp"
 #include <iostream>
+#include <map>
 
 #if defined (ENABLE_PREDICT) && defined (USE_TORCH)
 #include "torchscript/duckdb_torch.hpp"
@@ -28,11 +29,7 @@ public:
         std::cout << "Predict @run: " << stats.predict << std::endl;
         std::cout << "Move Rev @run: " << stats.move_rev << std::endl;
 
-        std::map<std::string, long> stats_map{{"load", stats.load},
-                                      {"move", stats.move},
-                                      {"predict", stats.predict},
-                                      {"move_rev", stats.move_rev}};
-
+        std::map<std::string, long> stats_map{{"load", stats.load}, {"move", stats.move}, {"predict", stats.predict}, {"move_rev", stats.move_rev}};
 
         context.thread.profiler.Flush(op, stats_map, "predict");
     }

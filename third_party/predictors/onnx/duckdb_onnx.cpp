@@ -3,6 +3,10 @@
 #include <algorithm>
 #include <iostream>
 
+#define MOVE_ROW_PUSH 0
+#define MOVE_ROW_COPY 1
+#define MOVE_COL_COPY 0
+
 namespace duckdb {
 ONNXPredictor::ONNXPredictor() : Predictor() {}
 
@@ -45,27 +49,44 @@ void ONNXPredictor::Predict(std::vector<float> &input, std::vector<float> &outpu
     output.insert(output.end(), floatarr, floatarr + output_size);
 }
 
-void ONNXPredictor::PredictChunk(DataChunk &input, DataChunk &output, int m, int n, int output_size,
+void ONNXPredictor::PredictChunk(DataChunk &input, DataChunk &output, int rows, int cols, int output_size,
                                   PredictStats &stats) {
 #if OPT_TIMING
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 #endif
+    std::array<int64_t, 2> input_shape_{rows, cols};
+    std::array<int64_t, 2> output_shape_{rows, output_size};
 
-    // TODO: Create tensors
-    std::array<int64_t, 2> input_shape_{m, n};
-    std::array<int64_t, 2> output_shape_{m, output_size};
-
+#if MOVE_ROW_PUSH
     std::vector<float> input_data;
-    for (int i = 0; i < m; ++i) {
-        for (int j = 0; j < n; ++j) {
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; j++) {
             input_data.push_back(*((float*) (input.data[j].GetData()) + i));
         }
     }
-    std::vector<float> output_data;
-    output_data.reserve(m * output_size);
-    for (int i = 0; i < m * output_size; ++i) {
-        output_data.emplace_back(0);
+#elif MOVE_ROW_COPY
+    // auto out_data_ptr = output_data.data();
+    std::vector<float> input_data(rows * cols);
+    for (int i = 0; i < rows; ++i) {
+        for (idx_t idx = 0; idx < cols; idx++) {
+            float* start = (float*) input.data[idx].GetData();
+            float* dest = input_data.data() + idx;
+            *(dest + i * cols) = *(start + i);
+        }
     }
+#elif MOVE_COL_COPY
+    // auto out_data_ptr = output_data.data();
+    std::vector<float> input_data(rows * cols);
+    for (idx_t idx = 0; idx < cols; idx++) {
+        float* start = (float*) input.data[idx].GetData();
+
+        float* dest = input_data.data() + idx;
+        for (int i = 0; i < rows; ++i) {
+            *(dest + i * cols) = *(start + i);
+        }
+    }
+#endif
+    std::vector<float> output_data(rows * output_size, 0);
 
     auto memory_info = Ort::MemoryInfo::CreateCpu(OrtDeviceAllocator, OrtMemTypeCPU);
     Ort::Value input_tensor_ = Ort::Value::CreateTensor<float>(memory_info, input_data.data(), input_data.size(),
@@ -99,7 +120,7 @@ void ONNXPredictor::PredictChunk(DataChunk &input, DataChunk &output, int m, int
         data_ptr_t start = data_ptr_cast(float_pointer);
 
         auto dest = output.data[idx].GetData();
-        for (int i = 0; i < m; ++i) {
+        for (int i = 0; i < rows; ++i) {
             *((float*) dest + i) = *((float*) start + i * output_size);
         }
     }
