@@ -3,10 +3,6 @@
 #include <algorithm>
 #include <iostream>
 
-#define MOVE_ROW_PUSH 0
-#define MOVE_ROW_COPY 1
-#define MOVE_COL_COPY 0
-
 namespace duckdb {
 ONNXPredictor::ONNXPredictor() : Predictor() {}
 
@@ -57,15 +53,15 @@ void ONNXPredictor::PredictChunk(DataChunk &input, DataChunk &output, int rows, 
     std::array<int64_t, 2> input_shape_{rows, cols};
     std::array<int64_t, 2> output_shape_{rows, output_size};
 
-#if MOVE_ROW_PUSH
+#if MOVE_METHOD == ROW_FIRST_PUSH
     std::vector<float> input_data;
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < cols; j++) {
             input_data.push_back(*((float*) (input.data[j].GetData()) + i));
         }
     }
-#elif MOVE_ROW_COPY
-    // auto out_data_ptr = output_data.data();
+#endif
+#if MOVE_METHOD == ROW_FIRST_COPY
     std::vector<float> input_data(rows * cols);
     for (int i = 0; i < rows; ++i) {
         for (idx_t idx = 0; idx < cols; idx++) {
@@ -74,8 +70,8 @@ void ONNXPredictor::PredictChunk(DataChunk &input, DataChunk &output, int rows, 
             *(dest + i * cols) = *(start + i);
         }
     }
-#elif MOVE_COL_COPY
-    // auto out_data_ptr = output_data.data();
+#endif
+#if MOVE_METHOD == COL_FIRST_COPY
     std::vector<float> input_data(rows * cols);
     for (idx_t idx = 0; idx < cols; idx++) {
         float* start = (float*) input.data[idx].GetData();
@@ -114,6 +110,33 @@ void ONNXPredictor::PredictChunk(DataChunk &input, DataChunk &output, int rows, 
     begin = std::chrono::steady_clock::now();
 #endif
 
+#if MOVE_REV_METHOD == ROW_FIRST_SET
+    auto out_data_ptr = output_data.data();
+    idx_t idx = 0;
+    for (auto i = out_data_ptr; i != out_data_ptr + output_data.size(); ++i) {
+        output.SetValue(idx % output_size, idx / output_size, Value(*i));
+        idx++;
+    }
+#endif
+#if MOVE_REV_METHOD == COL_FIRST_SET
+    auto out_data_ptr = output_data.data();
+    for (idx_t idx = 0; idx < output_size; idx++) {
+        for (idx_t data_i = 0; data_i < m; ++data_i) {
+            float* data = out_data_ptr + idx + (data_i * output_size);
+            output.SetValue(idx, data_i, Value(*data));
+        }
+    }
+#endif
+#if MOVE_REV_METHOD == ROW_FIRST_COPY
+    auto out_data_ptr = output_data.data();
+    idx_t idx = 0;
+    for (auto i = out_data_ptr; i != out_data_ptr + output_data.size(); ++i) {
+        auto dest = output.data[idx % output_size].GetData();
+        *((float*) dest + (idx / output_size)) = *i;
+        idx++;
+    }
+#endif
+#if MOVE_REV_METHOD == COL_FIRST_COPY
     auto out_data_ptr = output_data.data();
     for (idx_t idx = 0; idx < output_size; idx++) {
         float* float_pointer = out_data_ptr + idx;
@@ -124,6 +147,7 @@ void ONNXPredictor::PredictChunk(DataChunk &input, DataChunk &output, int rows, 
             *((float*) dest + i) = *((float*) start + i * output_size);
         }
     }
+#endif
 
 #if OPT_TIMING
     end = std::chrono::steady_clock::now();

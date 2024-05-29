@@ -12,7 +12,11 @@
 #define COL_FIRST_SET 1
 #define ROW_FIRST_COPY 2
 #define COL_FIRST_COPY 3
+#define ROW_FIRST_PUSH 4
+
+#define MOVE_METHOD COL_FIRST_COPY
 #define MOVE_REV_METHOD COL_FIRST_COPY
+
 #define OPT_TIMING 1
 
 namespace duckdb {
