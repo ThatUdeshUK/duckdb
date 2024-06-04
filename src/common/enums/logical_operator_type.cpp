@@ -130,7 +130,6 @@ string LogicalOperatorToString(LogicalOperatorType type) {
 		return "PIVOT";
     case LogicalOperatorType::LOGICAL_PREDICT:
         return "PREDICT";
-    }
 	case LogicalOperatorType::LOGICAL_UPDATE_EXTENSIONS:
 		return "UPDATE_EXTENSIONS";
 	}
