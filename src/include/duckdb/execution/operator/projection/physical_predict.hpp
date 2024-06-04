@@ -24,13 +24,16 @@ public:
     Predictor() : success(false), error_message(""){};
     virtual ~Predictor() {};
 
+    std::string model_path;
     bool success;
     std::string error_message;
 public:
     virtual void Load(const std::string &model_path, PredictStats &stats) {};
     virtual void Predict(std::vector<float> &input, std::vector<float> &output, int output_size) {};
-    virtual void PredictVector(std::vector<float> &input, std::vector<float> &output, int m, int n, int output_size) {};
-    virtual void PredictChunk(DataChunk &input, DataChunk &output, int m, int n, int output_size, PredictStats &stats) {};
+    virtual void PredictLM(std::string &input, std::vector<float> &output, int output_size) {};
+    virtual void PredictLMChunk(DataChunk &input, DataChunk &output, int rows, int output_size, PredictStats &stats) {};
+    virtual void PredictVector(std::vector<float> &input, std::vector<float> &output, int rows, int cols, int output_size) {};
+    virtual void PredictChunk(DataChunk &input, DataChunk &output, int rows, int cols, int output_size, PredictStats &stats) {};
 };
 
 //! PhysicalPredict implements the physical PREDICT operation

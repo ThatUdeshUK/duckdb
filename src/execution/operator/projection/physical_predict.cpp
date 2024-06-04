@@ -4,13 +4,15 @@
 #include <map>
 
 #if defined (ENABLE_PREDICT) && defined (USE_TORCH)
-#include "torchscript/duckdb_torch.hpp"
+#include "duckdb_torch.hpp"
 #elif ENABLE_PREDICT
-#include "onnx/duckdb_onnx.hpp"
+#include "duckdb_onnx.hpp"
 #endif
 
-#define CHUNK_PRED 1
+#define CHUNK_PRED 0
 #define VEC_PRED 0
+#define LM_PRED 0
+#define LM_CHUNK_PRED 1
 
 namespace duckdb {
 class PredictState : public OperatorState {
@@ -87,6 +89,25 @@ OperatorResultType PhysicalPredict::Execute(ExecutionContext &context, DataChunk
     }
     inputs.clear();
     outputs.clear();
+#elif LM_PRED
+    int output_size = (int) result_set_types.size();
+    std::string input_str;
+    std::vector<float> outputs;
+
+    for (idx_t row_idx = 0; row_idx < input.size(); row_idx++) {
+        input_str = StringValue::Get(input.GetValue(0, row_idx));
+
+        predictor.PredictLM(input_str, outputs, output_size);
+        idx_t res_idx = 0;
+        for(const float& i : outputs) {
+            predictions.SetValue(res_idx, row_idx, Value(i));
+            res_idx++;
+        }
+
+        outputs.clear();
+    }
+#elif LM_CHUNK_PRED
+    predictor.PredictLMChunk(input, predictions, (int) input.size(), (int) result_set_types.size(), state.stats);
 #else
     int output_size = (int) result_set_types.size();
     std::vector<float> inputs;
@@ -106,10 +127,9 @@ OperatorResultType PhysicalPredict::Execute(ExecutionContext &context, DataChunk
         inputs.clear();
         outputs.clear();
     }
-#endif // VECTORIZED_PREDICTIONS
+#endif
 
     chunk.Fuse(predictions);
-
 	return OperatorResultType::NEED_MORE_INPUT;
 }
 
