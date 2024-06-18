@@ -26,16 +26,21 @@ class ONNXPredictor: public Predictor {
 public:
     ONNXPredictor();
 
+    int execution_mode;
+    int intra_tc;
+    int inter_tc;
+
 public:
+    void Config(const ClientConfig &config) override;
     void Load(const std::string &model_path, PredictStats &stats) override;
     void Predict(std::vector<float> &input, std::vector<float> &output, int output_size) override;
+    void PredictChunk(DataChunk &input, DataChunk &output, int rows, int cols, int output_size, PredictStats &stats) override;
     void PredictLM(std::string &input, std::vector<float> &output, int output_size) override;
     void PredictLMChunk(DataChunk &input, DataChunk &output, int rows, int output_size, PredictStats &stats) override;
-    void PredictChunk(DataChunk &input, DataChunk &output, int rows, int cols, int output_size, PredictStats &stats) override;
 private:
     Ort::Session session{nullptr};
     FullTokenizer tokenizer;
-
+    
     void Preprocess(const std::string &text, long* input_ids, long* mask, int offset, int max_length) const;
 };
 } // namespace duckdb

@@ -123,6 +123,21 @@ struct ClientConfig {
 	//! (empty = print to console)
 	string http_logging_output;
 
+	//! Batch size used by the ML operator for inference
+	idx_t ml_batch_size = 2048;
+
+	//! Max fixed token size for the output of the LLM tokenizer
+	idx_t llm_max_tokens = 512;
+	
+	//! Execution mode for ONNX Runtime (0 - Sequential, 1 - Parallel)
+	idx_t onnx_execution_mode = 0;
+
+	//! Intra thread count for ONNX Runtime
+	idx_t onnx_intra_tc = 2;
+
+	//! Inter thread count for ONNX Runtime
+	idx_t onnx_inter_tc = 512;
+
 public:
 	static ClientConfig &GetConfig(ClientContext &context);
 	static const ClientConfig &GetConfig(const ClientContext &context);

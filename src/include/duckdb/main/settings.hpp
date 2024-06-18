@@ -615,6 +615,56 @@ struct ProfilingModeSetting {
 	static Value GetSetting(const ClientContext &context);
 };
 
+struct MLBatchSizeSetting {
+	static constexpr const char *Name = "ml_batch_size";
+	static constexpr const char *Description =
+	    "Batch size used by the ML operator for inference";
+	static constexpr const LogicalTypeId InputType = LogicalTypeId::INTEGER;
+	static void SetLocal(ClientContext &context, const Value &parameter);
+	static void ResetLocal(ClientContext &context);
+	static Value GetSetting(const ClientContext &context);
+};
+
+struct LLMMaxTokensSetting {
+	static constexpr const char *Name = "llm_max_tokens";
+	static constexpr const char *Description =
+	    "Max fixed token size for the output of the LLM tokenizer";
+	static constexpr const LogicalTypeId InputType = LogicalTypeId::INTEGER;
+	static void SetLocal(ClientContext &context, const Value &parameter);
+	static void ResetLocal(ClientContext &context);
+	static Value GetSetting(const ClientContext &context);
+};
+
+struct ONNXExecutionModeSetting {
+	static constexpr const char *Name = "onnx_execution_mode";
+	static constexpr const char *Description =
+	    "Execution mode for ONNX Runtime (0 - Sequential, 1 - Parallel)";
+	static constexpr const LogicalTypeId InputType = LogicalTypeId::INTEGER;
+	static void SetLocal(ClientContext &context, const Value &parameter);
+	static void ResetLocal(ClientContext &context);
+	static Value GetSetting(const ClientContext &context);
+};
+
+struct ONNXIntraTCSetting {
+	static constexpr const char *Name = "onnx_intra_tc";
+	static constexpr const char *Description =
+	    "Intra thread count for ONNX Runtime";
+	static constexpr const LogicalTypeId InputType = LogicalTypeId::INTEGER;
+	static void SetLocal(ClientContext &context, const Value &parameter);
+	static void ResetLocal(ClientContext &context);
+	static Value GetSetting(const ClientContext &context);
+};
+
+struct ONNXInterTCSetting {
+	static constexpr const char *Name = "onnx_inter_tc";
+	static constexpr const char *Description =
+	    "Inter thread count for ONNX Runtime";
+	static constexpr const LogicalTypeId InputType = LogicalTypeId::INTEGER;
+	static void SetLocal(ClientContext &context, const Value &parameter);
+	static void ResetLocal(ClientContext &context);
+	static Value GetSetting(const ClientContext &context);
+};
+
 struct ProgressBarTimeSetting {
 	static constexpr const char *Name = "progress_bar_time";
 	static constexpr const char *Description =

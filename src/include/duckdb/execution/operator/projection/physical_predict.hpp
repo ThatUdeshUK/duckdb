@@ -9,11 +9,19 @@
 #pragma once
 
 #include "duckdb/execution/physical_operator.hpp"
+#include "duckdb/main/client_config.hpp"
+#include "duckdb/common/common.hpp"
 #include "duckdb/planner/expression.hpp"
 
 namespace duckdb {
+enum class PredictorTask : uint8_t {
+    PREDICT_TABULAR_TASK = 0,
+    PREDICT_LLM_TASK = 1
+};
+
 struct PredictStats {
     long load;
+    long preprocess;
     long move;
     long predict;
     long move_rev;
@@ -24,10 +32,15 @@ public:
     Predictor() : success(false), error_message(""){};
     virtual ~Predictor() {};
 
+    PredictorTask task;
     std::string model_path;
+    int batch_size;
+    int llm_max_tokens; // LLM specific
+
     bool success;
     std::string error_message;
 public:
+    virtual void Config(const ClientConfig &config) {};
     virtual void Load(const std::string &model_path, PredictStats &stats) {};
     virtual void Predict(std::vector<float> &input, std::vector<float> &output, int output_size) {};
     virtual void PredictLM(std::string &input, std::vector<float> &output, int output_size) {};

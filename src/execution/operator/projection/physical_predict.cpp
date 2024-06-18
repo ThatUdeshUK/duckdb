@@ -1,5 +1,5 @@
 #include "duckdb/execution/operator/projection/physical_predict.hpp"
-#include "duckdb/common/common.hpp"
+
 #include <iostream>
 #include <map>
 
@@ -9,10 +9,10 @@
 #include "duckdb_onnx.hpp"
 #endif
 
-#define CHUNK_PRED 0
-#define VEC_PRED 0
-#define LM_PRED 0
-#define LM_CHUNK_PRED 1
+#define CHUNK_PRED 1
+// #define VEC_PRED 0
+// #define LM_PRED 0
+#define LM_CHUNK_PRED 0
 
 namespace duckdb {
 class PredictState : public OperatorState {
@@ -53,8 +53,16 @@ unique_ptr<Predictor> PhysicalPredict::InitPredictor() const {
 }
 
 unique_ptr<OperatorState> PhysicalPredict::GetOperatorState(ExecutionContext &context) const {
+	auto &client_config = ClientConfig::GetConfig(context.client);
+
     auto stats = make_uniq<PredictStats>();
     auto p = InitPredictor();
+#if LM_CHUNK_PRED
+    p->task = PredictorTask::PREDICT_LLM_TASK;
+#elif CHUNK_PRED
+    p->task = PredictorTask::PREDICT_TABULAR_TASK;
+#endif
+    p->Config(client_config);
     p->Load(model_name, *stats);
     return make_uniq<PredictState>(context, std::move(p), *stats);
 }
