@@ -117,8 +117,8 @@ void ONNXPredictor::PredictLM(std::string &input, std::vector<float> &output, in
 	output.insert(output.end(), floatarr, floatarr + output_size);
 }
 
-void ONNXPredictor::PredictLMChunk(DataChunk &input, DataChunk &output, int rows, int output_size,
-                                   PredictStats &stats) {
+void ONNXPredictor::PredictLMChunk(DataChunk &input, DataChunk &output, int rows, std::vector<idx_t> &input_mask, 
+								   int output_size, PredictStats &stats) {
 	int rounds = rows / batch_size;
 	if (rows % batch_size != 0)
 		rounds++;
@@ -136,7 +136,7 @@ void ONNXPredictor::PredictLMChunk(DataChunk &input, DataChunk &output, int rows
 		std::vector<long> masks(num_rows * llm_max_tokens);
 
 		for (int i = frow; i < lrow; ++i) {
-			auto input_str = StringValue::Get(input.GetValue(0, i));
+			auto input_str = StringValue::Get(input.GetValue(input_mask[0], i));
 			int offset = (i - frow) * llm_max_tokens;
 			Preprocess(input_str, input_ids.data(), masks.data(), offset, llm_max_tokens);
 		}
@@ -193,8 +193,8 @@ void ONNXPredictor::PredictLMChunk(DataChunk &input, DataChunk &output, int rows
 	}
 }
 
-void ONNXPredictor::PredictChunk(DataChunk &input, DataChunk &output, int rows, int cols, int output_size,
-                                 PredictStats &stats) {
+void ONNXPredictor::PredictChunk(DataChunk &input, DataChunk &output, int rows, const std::vector<idx_t> &input_mask,
+								 int output_size, PredictStats &stats) {
  	int rounds = rows / batch_size;
 	if (rows % batch_size != 0)
 		rounds++;
@@ -208,21 +208,22 @@ void ONNXPredictor::PredictChunk(DataChunk &input, DataChunk &output, int rows, 
 		int lrow = std::min(frow + batch_size, rows);
 		int num_rows = lrow - frow;
 
-		std::array<int64_t, 2> input_shape_ {num_rows, cols};
+		std::array<int64_t, 2> input_shape_ {num_rows, input_mask.size()};
 		std::array<int64_t, 2> output_shape_ {num_rows, output_size};
 
 #if MOVE_METHOD == ROW_FIRST_PUSH
 		std::vector<float> input_data;
 		for (int i = frow; i < lrow; ++i) {
-			for (int j = 0; j < cols; j++) {
+			for (auto &j : input_mask) {	
 				input_data.push_back(*((float *)(input.data[j].GetData()) + i));
 			}
 		}
 #endif
 #if MOVE_METHOD == ROW_FIRST_COPY
+		int cols = input_mask.size();
 		std::vector<float> input_data(num_rows * cols);
 		for (int i = frow; i < lrow; ++i) {
-			for (idx_t idx = 0; idx < cols; idx++) {
+			for (auto &idx : input_mask) {
 				float *start = (float *)input.data[idx].GetData();
 				float *dest = input_data.data() + idx;
 				*(dest + i * cols) = *(start + i);
@@ -230,8 +231,9 @@ void ONNXPredictor::PredictChunk(DataChunk &input, DataChunk &output, int rows, 
 		}
 #endif
 #if MOVE_METHOD == COL_FIRST_COPY
+		int cols = input_mask.size();
 		std::vector<float> input_data(num_rows * cols);
-		for (idx_t idx = 0; idx < cols; idx++) {
+		for (auto &idx : input_mask) {
 			float *start = (float *)input.data[idx].GetData();
 
 			float *dest = input_data.data() + idx;

@@ -23,7 +23,7 @@ public:
     void Load(const std::string &model_path, PredictStats &stats) override;
     void Predict(std::vector<float> &input, std::vector<float> &output, int output_size) override;
     void PredictVector(std::vector<float> &input, std::vector<float> &output, int m, int n, int output_size) override;
-    void PredictChunk(DataChunk &input, DataChunk &output, int m, int n, int output_size, PredictStats &stats) override;
+    void PredictChunk(DataChunk &input, DataChunk &output, int rows, const std::vector<idx_t> &input_mask, int output_size, PredictStats &stats) override;
 private:
     torch::jit::script::Module model;
 };

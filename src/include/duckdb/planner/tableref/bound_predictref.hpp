@@ -17,6 +17,8 @@ struct BoundPredictInfo {
     string model_name;
     //! The set of types
     vector<LogicalType> types;
+    //! Input mask for feature column
+    vector<idx_t> input_mask;
     //! Result set names
     vector<string> result_set_names;
     //! Result set types

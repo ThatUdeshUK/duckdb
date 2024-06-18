@@ -28,7 +28,9 @@ public:
 	string model_name;
     //! Aliases for the column names
     vector<string> column_name_alias;
-    //! Result set names
+    //! Input set names
+    vector<string> input_set_names;
+	    //! Result set names
     vector<string> result_set_names;
     //! Result set types
     vector<LogicalType> result_set_types;

@@ -48,8 +48,8 @@ void TorchPredictor::PredictVector(std::vector<float> &input, std::vector<float>
     output.insert(output.end(), out.data_ptr<float>(), out.data_ptr<float>() + out.numel());
 }
 
-void TorchPredictor::PredictChunk(DataChunk &input, DataChunk &output, int m, int n, int output_size,
-                                  PredictStats &stats) {
+void TorchPredictor::PredictChunk(DataChunk &input, DataChunk &output, int rows, std::vector<int> &input_mask,
+                                  int output_size, PredictStats &stats) {
 #if OPT_TIMING
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 #endif
@@ -58,8 +58,8 @@ void TorchPredictor::PredictChunk(DataChunk &input, DataChunk &output, int m, in
     auto options = torch::TensorOptions().dtype(torch::kFloat32);
 
     std::vector <torch::Tensor> my_input_lists;
-    for (int i = 0; i < n; ++i) {
-        my_input_lists.push_back(torch::from_blob(input.data[i].GetData(), {m, 1}, options));
+    for (int i = 0; i < input_mask.size(); ++i) {
+        my_input_lists.push_back(torch::from_blob(input.data[i].GetData(), {rows, 1}, options));
     }
     torch::Tensor my_input = at::cat(my_input_lists, 1);
     inputs.push_back(my_input);
@@ -89,7 +89,7 @@ void TorchPredictor::PredictChunk(DataChunk &input, DataChunk &output, int m, in
 #if MOVE_REV_METHOD == COL_FIRST_SET
     float* data_ptr = out.data_ptr<float>();
     for (idx_t idx = 0; idx < output_size; idx++) {
-        for (idx_t data_i = 0; data_i < m; ++data_i) {
+        for (idx_t data_i = 0; data_i < rows; ++data_i) {
             float* data = data_ptr + idx + (data_i * output_size);
             output.SetValue(idx, data_i, Value(*data));
         }
@@ -109,7 +109,7 @@ void TorchPredictor::PredictChunk(DataChunk &input, DataChunk &output, int m, in
         data_ptr_t start = data_ptr_cast(float_pointer);
 
         auto dest = output.data[idx].GetData();
-        for (int i = 0; i < m; ++i) {
+        for (int i = 0; i < rows; ++i) {
             *((float*) dest + i) = *((float*) start + i * output_size);
         }
     }

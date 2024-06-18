@@ -1100,13 +1100,14 @@ table_ref:	relation_expr opt_alias_clause opt_tablesample_clause
 					n->location = @2;
 					$$ = (PGNode *) n;
 				}
-			| PREDICT '(' SCONST ',' table_ref ')' WITH '(' with_result_col_list ')' opt_alias_clause
+			| PREDICT '(' SCONST ',' table_ref ')' BY '(' name_list_opt_comma ')' WITH '(' with_result_col_list ')' opt_alias_clause
 				{
 					PGPredictExpr *n = makeNode(PGPredictExpr);
 					n->source = $5;
 					n->model_name = $3;
-					n->result_set = $9;
-					n->alias = $11;
+					n->input_set = $9;
+					n->result_set = $13;
+					n->alias = $15;
 					$$ = (PGNode *) n;
 				}
 		;

@@ -9,7 +9,7 @@ unique_ptr<PhysicalOperator> PhysicalPlanGenerator::CreatePlan(LogicalPredict &o
 	auto child_plan = CreatePlan(*op.children[0]);
 	auto predict = make_uniq<PhysicalPredict>(std::move(op.types), std::move(child_plan));
 	predict->model_name = op.bound_predict.model_name;
-//    predict->result_set_names = std::move(op.bound_predict.result_set_names);
+   	predict->input_mask = std::move(op.bound_predict.input_mask);
     predict->result_set_types = std::move(op.bound_predict.result_set_types);
     return std::move(predict);
 }

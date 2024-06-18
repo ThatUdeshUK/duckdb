@@ -24,7 +24,24 @@ unique_ptr<BoundTableRef> Binder::BindBoundPredict(PredictRef &ref) {
     vector<LogicalType> result_types = ref.result_set_types;
     types.insert(types.end(), std::make_move_iterator(result_types.begin()), std::make_move_iterator(result_types.end()));
 
+    vector<idx_t> input_mask;
+    for(const std::string& input_col : ref.input_set_names) {
+        bool feature_found = false;
+        for (auto it = names.begin(); it != names.end(); ++it) {
+            int index = std::distance(names.begin(), it);
+            if (input_col == *it) {
+                input_mask.push_back(index);
+                feature_found = true;
+                break;
+            }
+        }
+        if (!feature_found) {
+            throw BinderException("Input tabel should contain the BY feature columns");
+        }
+    }
+
     result->bound_predict.types = types;
+    result->bound_predict.input_mask = input_mask;
     result->bound_predict.result_set_names = std::move(ref.result_set_names);
     result->bound_predict.result_set_types = std::move(ref.result_set_types);
 

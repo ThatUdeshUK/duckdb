@@ -34,9 +34,9 @@ public:
     void Config(const ClientConfig &config) override;
     void Load(const std::string &model_path, PredictStats &stats) override;
     void Predict(std::vector<float> &input, std::vector<float> &output, int output_size) override;
-    void PredictChunk(DataChunk &input, DataChunk &output, int rows, int cols, int output_size, PredictStats &stats) override;
+    void PredictChunk(DataChunk &input, DataChunk &output, int rows, const std::vector<idx_t> &input_mask, int output_size, PredictStats &stats) override;
     void PredictLM(std::string &input, std::vector<float> &output, int output_size) override;
-    void PredictLMChunk(DataChunk &input, DataChunk &output, int rows, int output_size, PredictStats &stats) override;
+    void PredictLMChunk(DataChunk &input, DataChunk &output, int rows, std::vector<idx_t> &input_mask, int output_size, PredictStats &stats) override;
 private:
     Ort::Session session{nullptr};
     FullTokenizer tokenizer;

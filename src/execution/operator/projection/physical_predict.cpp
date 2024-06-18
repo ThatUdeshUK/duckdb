@@ -79,7 +79,7 @@ OperatorResultType PhysicalPredict::Execute(ExecutionContext &context, DataChunk
 
     auto &predictor = *state.predictor.get();
 #if CHUNK_PRED
-    predictor.PredictChunk(input, predictions, (int) input.size(), (int) input.ColumnCount(), (int) result_set_types.size(), state.stats);
+    predictor.PredictChunk(input, predictions, (int) input.size(), this->input_mask, (int) result_set_types.size(), state.stats);
 #elif VEC_PRED
     std::vector<float> inputs;
     std::vector<float> outputs;
