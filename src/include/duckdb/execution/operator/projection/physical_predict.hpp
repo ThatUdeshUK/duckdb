@@ -25,6 +25,9 @@ struct PredictStats {
     long move;
     long predict;
     long move_rev;
+
+    long correct;
+    long total;
 };
 
 class Predictor {
@@ -44,7 +47,7 @@ public:
     virtual void Load(const std::string &model_path, PredictStats &stats) {};
     virtual void Predict(std::vector<float> &input, std::vector<float> &output, int output_size) {};
     virtual void PredictLM(std::string &input, std::vector<float> &output, int output_size) {};
-    virtual void PredictLMChunk(DataChunk &input, DataChunk &output, int rows,  std::vector<idx_t> &input_mask, int output_size, PredictStats &stats) {};
+    virtual void PredictLMChunk(DataChunk &input, DataChunk &output, int rows, const std::vector<idx_t> &input_mask, int output_size, PredictStats &stats) {};
     virtual void PredictVector(std::vector<float> &input, std::vector<float> &output, int rows, int cols, int output_size) {};
     virtual void PredictChunk(DataChunk &input, DataChunk &output, int rows, const std::vector<idx_t> &input_mask, int output_size, PredictStats &stats) {};
 };

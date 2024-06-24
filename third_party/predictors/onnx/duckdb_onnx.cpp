@@ -117,7 +117,7 @@ void ONNXPredictor::PredictLM(std::string &input, std::vector<float> &output, in
 	output.insert(output.end(), floatarr, floatarr + output_size);
 }
 
-void ONNXPredictor::PredictLMChunk(DataChunk &input, DataChunk &output, int rows, std::vector<idx_t> &input_mask, 
+void ONNXPredictor::PredictLMChunk(DataChunk &input, DataChunk &output, int rows, const std::vector<idx_t> &input_mask, 
 								   int output_size, PredictStats &stats) {
 	int rounds = rows / batch_size;
 	if (rows % batch_size != 0)
