@@ -32,10 +32,10 @@ chmod +x ipdb
 
 ## Installing the Python package
 
-We release a `duckdb-python` package built with iPDB as the underlying engine. Please fetch the latest version from [Releases](https://github.com/purduedb/iPDb/releases) (i.e., `duckdb-<latest_version>.tar.gz`). To install the Python package, run:
+We release a `duckdb-python` package built with iPDB as the underlying engine. Please fetch the latest version from [Releases](https://github.com/purduedb/iPDb/releases) (i.e., `ipdb-<latest_version>.tar.gz`). To install the Python package, run:
 
 ```bash
-pip install duckdb-<latest_version>.tar.gz
+pip install ipdb-<latest_version>.tar.gz
 ```
 
 The above command will build the wheel and install iPDB as a Python package. The API is identical to the [DuckDB Python API](https://duckdb.org/docs/stable/clients/python/overview), however, this version supports all the semantic operators.  
