@@ -17,6 +17,19 @@ Read the paper at [arxiv](https://arxiv.org/pdf/2601.16432).
 }
 ```
 
+## Installing prebuilt binaries
+
+We publish prebuilt Linux CLI binaries for `amd64` and `arm64`, built with LLM OpenAI API support enabled (i.e., `ENABLE_PREDICT=1 ENABLE_LLM_API=1`), but without the native ONNX/llama.cpp backends. These are available at [Releases](https://github.com/purduedb/iPDb/releases) — look for `ipdb-cli-linux-<arch>.zip` (or `.gz`) for the CLI shell.
+
+```bash
+curl -LO https://github.com/purduedb/iPDb/releases/download/v1.1.0/ipdb-cli-linux-amd64.zip
+unzip ipdb-cli-linux-amd64.zip
+chmod +x ipdb
+./ipdb
+```
+
+> Replace architecture you want, `amd64` with `arm64` if you're on an ARM64 host.
+
 ## Installing the Python package
 
 We release a `duckdb-python` package built with iPDB as the underlying engine. Please fetch the latest version from [Releases](https://github.com/purduedb/iPDb/releases) (i.e., `duckdb-<latest_version>.tar.gz`). To install the Python package, run:

@@ -23,10 +23,11 @@ cd "curl-${CURL_VERSION}"
 # Disable protocols/features this project doesn't need, to avoid pulling in
 # extra static dependencies (libidn2, libpsl, nghttp2, libssh, ...) that
 # aren't available as static archives in the build container.
-./configure \
+CFLAGS="-fPIC" ./configure \
   --prefix="$PREFIX" \
   --disable-shared \
   --enable-static \
+  --with-pic \
   --with-openssl \
   --without-zlib \
   --without-libpsl \

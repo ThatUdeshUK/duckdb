@@ -103,7 +103,20 @@ always_excluded = normalize_path(
     ]
 )
 # files excluded from the amalgamation
-excluded_files = ['grammar.cpp', 'grammar.hpp', 'symbols.cpp']
+# 'torchscript' is a deprecated predictor backend (see
+# third_party/predictors/CMakeLists.txt) that is never built by CMake and
+# requires a LibTorch install to compile.
+# 'onnx' and 'llama_cpp' are alternative predictor backends that CMake builds
+# mutually exclusively via PREDICTOR_IMPL (only one, or neither, is ever
+# compiled in) -- they both define the same Predictor member functions
+# (PredictChunk, PredictLMChunk, ...), so bundling both into the single
+# amalgamated translation unit causes duplicate-definition errors, and each
+# also needs its own external SDK (onnxruntime / llama.cpp) headers to
+# compile at all. Neither is used by this project's default ENABLE_LLM_API
+# release build, so both are skipped here; building an amalgamation for a
+# PREDICTOR_IMPL=onnx/llama_cpp configuration needs this list adjusted by
+# hand to include the one backend that was actually built.
+excluded_files = ['grammar.cpp', 'grammar.hpp', 'symbols.cpp', 'torchscript', 'onnx', 'llama_cpp']
 # files excluded from individual file compilation during test_compile
 excluded_compilation_files = excluded_files + ['gram.hpp', 'kwlist.hpp', "duckdb-c.cpp"]
 
