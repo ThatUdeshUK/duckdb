@@ -3,12 +3,14 @@
 
 Experimental in-database LLM and deep-learning inference via native relational prediction operator. Built on top of a high-performance analytical database system, [DuckDB](https://github.com/duckdb/duckdb). 
 
+Refer to the [Documentation](https://ipdb-docs.pages.dev) for usage.
+
 Read the paper at [arxiv](https://arxiv.org/pdf/2601.16432).
 
 ```bibtex
 @misc{ipdb2026arxiv,
-      title={iPDB -- Optimizing SQL Queries with ML and LLM Predicates}, 
-      author={Udesh Kumarasinghe and Tyler Liu and Chunwei Liu and Walid G. Aref},
+      title={iPDB -- Optimizing Semantic SQL Queries}, 
+      author={Udesh Kumarasinghe and Tyler Liu and Ahmed R. Mahmood and Chunwei Liu and Walid G. Aref},
       year={2026},
       eprint={2601.16432},
       archivePrefix={arXiv},
