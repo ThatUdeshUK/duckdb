@@ -1,6 +1,6 @@
 site_name: iPDb
 site_description: In-database ML and LLM inference via a native relational PREDICT operator, built on DuckDB.
-site_url: https://purduedb.github.io/iPDb/
+site_url: https://ipdb-docs.pages.dev/
 repo_url: https://github.com/purduedb/iPDb
 repo_name: purduedb/iPDb
 edit_uri: edit/main/docs/
