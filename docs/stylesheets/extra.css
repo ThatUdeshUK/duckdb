@@ -1,0 +1,35 @@
+/* Custom brand color (gold, #CFB991) — mkdocs-material's built-in `primary` palette
+   only offers a fixed set of named colors, so the exact hex is applied here instead. */
+:root {
+  --md-primary-fg-color: #CFB991;
+  --md-primary-fg-color--light: #D6C4A2;
+  --md-primary-fg-color--dark: #B09D7B;
+  --md-primary-bg-color: #000000;
+  --md-primary-bg-color--light: rgba(0, 0, 0, 0.7);
+
+  --md-accent-fg-color: #EBD99F;
+  --md-accent-fg-color--transparent: #EBD99F;
+  --md-accent-bg-color: #C4BFC0;
+  --md-accent-bg-color--light: #C4BFC0;
+}
+
+/* Belt-and-suspenders: the header and top tabs bar (navigation.tabs) both read
+   --md-primary-fg-color already, but pin them directly so the color can't be
+   lost to a same-specificity rule from the theme's own palette stylesheet. */
+.md-header,
+.md-tabs {
+  background-color: #CFB991;
+  color: #000000;
+}
+
+/* Sidebar nav "header" — the sticky section label at the top of the left sidebar
+   on desktop, and the site-title bar at the top of the mobile drawer. The plain
+   `.md-nav__title` selector loses to the theme's own `.md-nav--primary
+   .md-nav__title` rule (higher specificity), which is why the earlier attempt
+   at this didn't actually take effect on desktop — match that selector instead,
+   and read the primary-color variable so it stays in sync with the rest of the
+   chrome above. */
+.md-nav--primary .md-nav__title {
+  background-color: var(--md-primary-fg-color);
+  color: var(--md-primary-bg-color);
+}

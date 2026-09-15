@@ -1,0 +1,83 @@
+site_name: iPDb
+site_description: In-database ML and LLM inference via a native relational PREDICT operator, built on DuckDB.
+site_url: https://purduedb.github.io/iPDb/
+repo_url: https://github.com/purduedb/iPDb
+repo_name: purduedb/iPDb
+edit_uri: edit/main/docs/
+
+docs_dir: docs
+
+theme:
+  name: material
+  icon:
+    logo: material/database
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+    - content.action.edit
+    - search.suggest
+    - search.highlight
+
+extra_css:
+  - stylesheets/extra.css
+
+markdown_extensions:
+  - admonition
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
+
+nav:
+  - Home: index.md
+  - Getting Started:
+      - Installation: getting-started/installation.md
+      - Quickstart: getting-started/quickstart.md
+      - Configuration: getting-started/configuration.md
+  - Guides:
+      - Running iPDb: guides/running.md
+      - Working with Input Data: guides/input-data.md
+      - Performance Tuning: guides/performance-tuning.md
+      - Troubleshooting: guides/troubleshooting.md
+  - Concepts:
+      - Architecture: concepts/architecture.md
+      - Execution Model: concepts/execution-model.md
+      - Terminology: concepts/terminology.md
+  - Reference:
+      - SQL: reference/sql.md
+      - CLI: reference/cli.md
+      - Settings: reference/config.md
+      - Output Formats: reference/output-formats.md
+  - Development:
+      - Building: development/build.md
+      - Testing: development/testing.md
+      - Contributing: development/contributing.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/purduedb/iPDb

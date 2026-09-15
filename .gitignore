@@ -295,9 +295,6 @@ cmake-build-release
 cmake-build-relwithdebinfo
 CMakeUserPresets.json
 
-# Generated documentation
-docs
-
 # tests
 test/test.sql
 duckdb_benchmark_data/
@@ -362,3 +359,6 @@ tools/pythonpkg/duckdb_build/
 
 CLAUDE.md
 .claude
+
+# MkDocs build output
+/site/
